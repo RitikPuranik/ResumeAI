@@ -1,0 +1,36 @@
+import { asyncHandler } from '../../shared/utils/asyncHandler.js'
+import { ApiResponse } from '../../shared/utils/apiResponse.js'
+import {
+  setupInterviewService, startInterviewService, submitAnswerService,
+  completeInterviewService, getInterviewHistoryService, getInterviewService,
+} from './interview.service.js'
+
+export const setupInterview = asyncHandler(async (req, res) => {
+  const interview = await setupInterviewService(req.user._id, req.body)
+  res.status(201).json(new ApiResponse(201, interview, 'Interview setup complete'))
+})
+
+export const startInterview = asyncHandler(async (req, res) => {
+  const interview = await startInterviewService(req.params.id, req.user._id)
+  res.status(200).json(new ApiResponse(200, interview, 'Interview started'))
+})
+
+export const submitAnswer = asyncHandler(async (req, res) => {
+  const interview = await submitAnswerService(req.params.id, req.user._id, req.body)
+  res.status(200).json(new ApiResponse(200, interview, 'Answer submitted'))
+})
+
+export const completeInterview = asyncHandler(async (req, res) => {
+  const interview = await completeInterviewService(req.params.id, req.user._id)
+  res.status(200).json(new ApiResponse(200, interview, 'Interview completed'))
+})
+
+export const getInterviewHistory = asyncHandler(async (req, res) => {
+  const history = await getInterviewHistoryService(req.user._id)
+  res.status(200).json(new ApiResponse(200, history, 'Interview history fetched'))
+})
+
+export const getInterview = asyncHandler(async (req, res) => {
+  const interview = await getInterviewService(req.params.id, req.user._id)
+  res.status(200).json(new ApiResponse(200, interview, 'Interview fetched'))
+})
