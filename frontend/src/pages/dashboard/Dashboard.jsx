@@ -15,8 +15,8 @@ export default function Dashboard() {
     queryKey: ['resumes'],
     queryFn: async () => {
       const result = await resumeAPI.getAll();
-      console.log('Resumes result:', result); // Debug
-      return Array.isArray(result) ? result : [];
+      console.log('Resumes after extraction:', result);
+      return result || []; // Ensure array is returned
     },
   });
 
@@ -24,8 +24,8 @@ export default function Dashboard() {
     queryKey: ['interview-sessions'],
     queryFn: async () => {
       const result = await interviewAPI.getSessions();
-      console.log('Sessions result:', result); // Debug
-      return Array.isArray(result) ? result : [];
+      console.log('Sessions after extraction:', result);
+      return result || []; // Ensure array is returned
     },
   });
 

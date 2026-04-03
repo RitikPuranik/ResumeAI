@@ -3,7 +3,7 @@ import AtsResult from './ats.model.js'
 import Resume from '../resume/resume.model.js'
 import { ApiError } from '../../shared/utils/apiError.js'
 import { atsAnalysisPrompt } from './ats.analyzer.js'
-import { geminiGenerateJSON } from '../../config/gemini.js'
+import { groqGenerateJSON } from '../../config/groq.js'
 
 export const analyzeResumeService = async (userId, resumeId, file) => {
   let resumeText = ''
@@ -19,7 +19,7 @@ export const analyzeResumeService = async (userId, resumeId, file) => {
     throw new ApiError(400, 'Provide a resume file or resumeId')
   }
 
-  const data = await geminiGenerateJSON(atsAnalysisPrompt(resumeText))
+  const data = await groqGenerateJSON(atsAnalysisPrompt(resumeText))
 
   const result = await AtsResult.create({
     user: userId,

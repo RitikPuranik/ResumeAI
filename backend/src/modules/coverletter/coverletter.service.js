@@ -2,7 +2,7 @@ import CoverLetter from './coverletter.model.js'
 import Resume from '../resume/resume.model.js'
 import { ApiError } from '../../shared/utils/apiError.js'
 import { coverLetterPrompt } from './coverletter.prompts.js'
-import { geminiGenerate } from '../../config/gemini.js'
+import { groqGenerate } from '../../config/groq.js'
 
 export const generateCoverLetterService = async (userId, { resumeId, jobTitle, company, jobDescription, tone }) => {
   if (!resumeId || !jobTitle) throw new ApiError(400, 'resumeId and jobTitle are required')
@@ -11,7 +11,7 @@ export const generateCoverLetterService = async (userId, { resumeId, jobTitle, c
   if (!resume) throw new ApiError(404, 'Resume not found')
 
   // Cover letter returns plain text, not JSON
-  const content = await geminiGenerate(
+  const content = await groqGenerate(
     coverLetterPrompt(
       JSON.stringify(resume),
       jobTitle,

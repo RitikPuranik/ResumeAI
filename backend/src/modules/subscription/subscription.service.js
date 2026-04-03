@@ -18,8 +18,6 @@ try {
       }
     }
   })
-  console.log('✅ Manually loaded .env file from:', envPath)
-  console.log('RAZORPAY_KEY_ID loaded:', !!process.env.RAZORPAY_KEY_ID)
 } catch (err) {
   console.error('Failed to load .env file:', err.message)
 }
@@ -30,14 +28,6 @@ import crypto from 'crypto'
 import Subscription from './subscription.model.js'
 import { PLANS } from '../../shared/constants/plans.js'
 import { ApiError } from '../../shared/utils/apiError.js'
-
-console.log('=== Subscription Service Loading ===')
-console.log('RAZORPAY_KEY_ID from process.env:', process.env.RAZORPAY_KEY_ID ? '✅ Found' : '❌ Missing')
-console.log('RAZORPAY_KEY_SECRET from process.env:', process.env.RAZORPAY_KEY_SECRET ? '✅ Found' : '❌ Missing')
-if (process.env.RAZORPAY_KEY_ID) {
-  console.log('RAZORPAY_KEY_ID value starts with:', process.env.RAZORPAY_KEY_ID.substring(0, 10))
-}
-console.log('====================================')
 
 // Initialize Razorpay
 let razorpayInstance = null

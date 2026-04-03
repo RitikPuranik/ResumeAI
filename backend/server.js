@@ -9,12 +9,6 @@ const __dirname = path.dirname(__filename)
 // Load .env from the correct path BEFORE anything else
 dotenv.config({ path: path.join(__dirname, '.env') })
 
-// Log immediately to verify
-console.log('=== SERVER STARTUP ===')
-console.log('RAZORPAY_KEY_ID loaded:', !!process.env.RAZORPAY_KEY_ID)
-console.log('RAZORPAY_KEY_SECRET loaded:', !!process.env.RAZORPAY_KEY_SECRET)
-console.log('=====================')
-
 // Now import the rest
 import app from './src/app.js'
 import connectDB from './src/config/db.js'

@@ -13,34 +13,47 @@ export default function InterviewList() {
   const [showModal, setShowModal] = useState(false);
   const [starting, setStarting] = useState(false);
 
-  const { data: sessionsData, isLoading } = useQuery({
+  const { data: sessions, isLoading } = useQuery({
     queryKey: ['interview-sessions'],
-    queryFn: () => interviewAPI.getSessions().then((r) => r.data),
+    queryFn: async () => {
+      const result = await interviewAPI.getSessions();
+      console.log('Sessions result:', result);
+      return result || [];
+    },
   });
 
-  const { data: resumesData } = useQuery({
+  const { data: resumes } = useQuery({
     queryKey: ['resumes'],
-    queryFn: () => resumeAPI.getAll().then((r) => r.data),
+    queryFn: async () => {
+      const result = await resumeAPI.getAll();
+      console.log('Resumes result:', result);
+      return result || [];
+    },
   });
-
-  const sessions = sessionsData?.sessions || sessionsData || [];
-  const resumes = resumesData?.resumes || resumesData || [];
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const onStart = async (data) => {
-    setStarting(true);
-    try {
-      const res = await interviewAPI.startSession(data);
-      const id = res.data?.session?._id || res.data?._id;
-      toast.success('Interview session started!');
-      navigate(`/interview/session/${id}`);
-    } catch (err) {
+const onStart = async (data) => {
+  setStarting(true);
+  try {
+    const res = await interviewAPI.startSession(data);
+    const id = res.data?.data?._id || res.data?.session?._id || res.data?._id;
+    toast.success('Interview session started!');
+    navigate(`/interview/session/${id}`);
+  } catch (err) {
+    console.error('Start session error:', err.response?.data);
+    
+    // Show specific validation errors
+    if (err.response?.data?.errors && err.response.data.errors.length > 0) {
+      const errorMessages = err.response.data.errors.map(e => e.msg || e.message).join(', ');
+      toast.error(`Validation failed: ${errorMessages}`);
+    } else {
       toast.error(err.response?.data?.message || 'Failed to start session');
-    } finally {
-      setStarting(false);
     }
-  };
+  } finally {
+    setStarting(false);
+  }
+};
 
   return (
     <div className="max-w-4xl mx-auto animate-fade-up">
@@ -54,7 +67,7 @@ export default function InterviewList() {
         </button>
       </div>
 
-      {isLoading ? <PageLoader /> : sessions.length === 0 ? (
+      {isLoading ? <PageLoader /> : sessions?.length === 0 ? (
         <EmptyState
           icon={Mic2}
           title="No interview sessions yet"
@@ -67,7 +80,7 @@ export default function InterviewList() {
         />
       ) : (
         <div className="space-y-3">
-          {sessions.map((s) => (
+          {sessions?.map((s) => (
             <div key={s._id} className="card p-5 flex items-center gap-4">
               <div className="w-10 h-10 rounded-xl bg-warm-50 flex items-center justify-center flex-shrink-0">
                 <Mic2 size={18} className="text-warm-500" />
@@ -118,23 +131,34 @@ export default function InterviewList() {
               </div>
 
               <div>
+                <label className="label">Interview Round Type</label>
+                <select {...register('roundType', { required: 'Round type is required' })} className="input-field">
+                  <option value="">Select round type</option>
+                  <option value="technical">Technical Round</option>
+                  <option value="hr">HR / Managerial Round</option>
+                  <option value="mixed">Mixed (Both)</option>
+                </select>
+                {errors.roundType && <p className="error-text">{errors.roundType.message}</p>}
+              </div>
+              <div>
                 <label className="label">Experience Level</label>
-                <select {...register('experienceLevel')} className="input-field">
+                <select {...register('experienceLevel', { required: 'Experience level is required' })} className="input-field">
+                  <option value="">Select experience level</option>
                   <option value="fresher">Fresher (0–1 years)</option>
                   <option value="junior">Junior (1–3 years)</option>
                   <option value="mid">Mid-level (3–5 years)</option>
                   <option value="senior">Senior (5+ years)</option>
                 </select>
+                {errors.experienceLevel && <p className="error-text">{errors.experienceLevel.message}</p>}
               </div>
-
-              {resumes.length > 0 && (
+              {resumes?.length > 0 && (
                 <div>
                   <label className="label">Link Resume (optional)</label>
                   <select {...register('resumeId')} className="input-field">
                     <option value="">— Select a resume —</option>
                     {resumes.map((r) => (
                       <option key={r._id} value={r._id}>
-                        {r.filename || r.originalName || 'Resume'}
+                        {r.filename || r.originalName || r.title || 'Resume'}
                       </option>
                     ))}
                   </select>
@@ -143,9 +167,9 @@ export default function InterviewList() {
 
               <div>
                 <label className="label">Number of Questions</label>
-                <select {...register('questionsCount')} className="input-field">
+                <select {...register('questionsCount')} className="input-field" defaultValue="10">
                   <option value="5">5 questions</option>
-                  <option value="10" selected>10 questions</option>
+                  <option value="10">10 questions</option>
                   <option value="15">15 questions</option>
                 </select>
               </div>

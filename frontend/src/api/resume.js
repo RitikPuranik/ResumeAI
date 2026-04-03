@@ -3,20 +3,21 @@ import client from './client';
 export const resumeAPI = {
   getAll: async () => {
     const response = await client.get('/resumes');
-    console.log('Raw resume response:', response.data); // Debug
+    console.log('Raw resume response:', response.data);
     
-    // Handle different response structures
-    if (response.data?.data?.resumes && Array.isArray(response.data.data.resumes)) {
-      return response.data.data.resumes;
-    }
-    if (response.data?.resumes && Array.isArray(response.data.resumes)) {
-      return response.data.resumes;
-    }
+    // Extract the array from response.data.data
     if (response.data?.data && Array.isArray(response.data.data)) {
       return response.data.data;
     }
+    
+    // Fallback for other structures
     if (Array.isArray(response.data)) {
       return response.data;
+    }
+    
+    // Check for resumes property
+    if (response.data?.resumes && Array.isArray(response.data.resumes)) {
+      return response.data.resumes;
     }
     
     // Always return an array

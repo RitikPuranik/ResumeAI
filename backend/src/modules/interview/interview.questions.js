@@ -1,4 +1,4 @@
-import { geminiGenerateJSON } from '../../config/gemini.js'
+import { groqGenerateJSON } from '../../config/groq.js'
 
 export const generateQuestions = async (role, roundType) => {
   const prompt = `Generate 7 interview questions for a ${role} position.
@@ -12,6 +12,6 @@ Return ONLY a valid JSON object with no extra text or markdown:
   "questions": ["Question 1?", "Question 2?", "Question 3?", "Question 4?", "Question 5?", "Question 6?", "Question 7?"]
 }
 `
-  const data = await geminiGenerateJSON(prompt)
+  const data = await groqGenerateJSON(prompt)
   return data.questions
 }
