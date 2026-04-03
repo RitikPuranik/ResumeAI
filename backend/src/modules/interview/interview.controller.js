@@ -3,6 +3,7 @@ import { ApiResponse } from '../../shared/utils/apiResponse.js'
 import {
   setupInterviewService, startInterviewService, submitAnswerService,
   completeInterviewService, getInterviewHistoryService, getInterviewService,
+  getInterviewReportService,
 } from './interview.service.js'
 
 export const setupInterview = asyncHandler(async (req, res) => {
@@ -33,4 +34,9 @@ export const getInterviewHistory = asyncHandler(async (req, res) => {
 export const getInterview = asyncHandler(async (req, res) => {
   const interview = await getInterviewService(req.params.id, req.user._id)
   res.status(200).json(new ApiResponse(200, interview, 'Interview fetched'))
+})
+
+export const getInterviewReport = asyncHandler(async (req, res) => {
+  const report = await getInterviewReportService(req.params.id, req.user._id)
+  res.status(200).json(new ApiResponse(200, report, 'Report fetched'))
 })

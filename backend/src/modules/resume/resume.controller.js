@@ -3,8 +3,13 @@ import { ApiResponse } from '../../shared/utils/apiResponse.js'
 import {
   createResumeService, getAllResumesService, getResumeService,
   updateResumeService, deleteResumeService, generateResumePdfService,
-  setDefaultResumeService,
+  setDefaultResumeService, uploadResumeService,
 } from './resume.service.js'
+
+export const uploadResume = asyncHandler(async (req, res) => {
+  const resume = await uploadResumeService(req.user._id, req.file)
+  res.status(201).json(new ApiResponse(201, { resume }, 'Resume uploaded successfully'))
+})
 
 export const createResume = asyncHandler(async (req, res) => {
   const resume = await createResumeService(req.user._id, req.body)

@@ -10,9 +10,14 @@ import Dashboard from './pages/dashboard/Dashboard';
 import ResumeList from './pages/resume/ResumeList';
 import ResumeUpload from './pages/resume/ResumeUpload';
 import ResumeAnalysis from './pages/resume/ResumeAnalysis';
+import ResumeBuilder from './pages/resume/ResumeBuilder';
 import InterviewList from './pages/interview/InterviewList';
 import InterviewSession from './pages/interview/InterviewSession';
 import InterviewReport from './pages/interview/InterviewReport';
+import AtsChecker from './pages/ats/AtsChecker';
+import JobMatch from './pages/jobmatch/JobMatch';
+import CoverLetter from './pages/coverletter/CoverLetter';
+import Progress from './pages/progress/Progress';
 import Pricing from './pages/pricing/Pricing';
 import Profile from './pages/profile/Profile';
 import LandingPage from './pages/LandingPage';
@@ -40,15 +45,20 @@ export default function App() {
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
           <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/resumes" element={<ResumeList />} />
-            <Route path="/resumes/upload" element={<ResumeUpload />} />
-            <Route path="/resumes/:id" element={<ResumeAnalysis />} />
-            <Route path="/interview" element={<InterviewList />} />
-            <Route path="/interview/session/:id" element={<InterviewSession />} />
-            <Route path="/interview/report/:id" element={<InterviewReport />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/dashboard"              element={<Dashboard />} />
+            <Route path="/resumes"                element={<ResumeList />} />
+            <Route path="/resumes/upload"         element={<ResumeUpload />} />
+            <Route path="/resumes/builder"        element={<ResumeBuilder />} />
+            <Route path="/resumes/:id"            element={<ResumeAnalysis />} />
+            <Route path="/interview"              element={<InterviewList />} />
+            <Route path="/interview/session/:id"  element={<InterviewSession />} />
+            <Route path="/interview/report/:id"   element={<InterviewReport />} />
+            <Route path="/ats"                    element={<AtsChecker />} />
+            <Route path="/jobmatch"               element={<JobMatch />} />
+            <Route path="/coverletter"            element={<CoverLetter />} />
+            <Route path="/progress"               element={<Progress />} />
+            <Route path="/pricing"                element={<Pricing />} />
+            <Route path="/profile"                element={<Profile />} />
           </Route>
         </Routes>
       </BrowserRouter>
@@ -65,7 +75,7 @@ export default function App() {
             boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
           },
           success: { iconTheme: { primary: '#4a7d55', secondary: '#fff' } },
-          error: { iconTheme: { primary: '#e05252', secondary: '#fff' } },
+          error:   { iconTheme: { primary: '#e05252', secondary: '#fff' } },
         }}
       />
     </QueryClientProvider>

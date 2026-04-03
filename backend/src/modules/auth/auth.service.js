@@ -21,3 +21,22 @@ export const loginUser = async (email, password) => {
   if (!match) throw new ApiError(401, 'Invalid email or password')
   return { user: { id: user._id, name: user.name, email: user.email }, token: generateToken(user._id) }
 }
+
+export const updateProfile = async (userId, data) => {
+  const allowed = ['name', 'phone', 'location', 'avatar']
+  const updates = {}
+  allowed.forEach(field => { if (data[field] !== undefined) updates[field] = data[field] })
+  const user = await User.findByIdAndUpdate(userId, updates, { new: true }).select('-password')
+  if (!user) throw new ApiError(404, 'User not found')
+  return user
+}
+
+export const changePassword = async (userId, currentPassword, newPassword) => {
+  if (!currentPassword || !newPassword) throw new ApiError(400, 'Both passwords are required')
+  const user = await User.findById(userId)
+  if (!user) throw new ApiError(404, 'User not found')
+  const match = await bcrypt.compare(currentPassword, user.password)
+  if (!match) throw new ApiError(401, 'Current password is incorrect')
+  user.password = await bcrypt.hash(newPassword, 12)
+  await user.save()
+}

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
-import { Upload, FileText, X, CheckCircle, Sparkles } from 'lucide-react';
+import { Upload, FileText, X, CheckCircle, Sparkles, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { resumeAPI } from '../../api/resume';
 import { Spinner } from '../../components/ui';
@@ -19,10 +19,10 @@ export default function ResumeUpload() {
     onDrop,
     accept: { 'application/pdf': ['.pdf'] },
     maxFiles: 1,
-    maxSize: 10 * 1024 * 1024,
+    maxSize: 5 * 1024 * 1024,
     onDropRejected: (files) => {
       const err = files[0]?.errors[0];
-      if (err?.code === 'file-too-large') toast.error('File too large. Max 10MB.');
+      if (err?.code === 'file-too-large') toast.error('File too large. Max 5MB.');
       else toast.error('Only PDF files are accepted.');
     },
   });
@@ -34,8 +34,9 @@ export default function ResumeUpload() {
       const formData = new FormData();
       formData.append('resume', file);
       const res = await resumeAPI.upload(formData);
-      const id = res.data?.resume?._id || res.data?._id;
-      toast.success('Resume uploaded successfully!');
+      const resume = res.data?.data?.resume || res.data?.data || res.data;
+      const id = resume?._id;
+      toast.success('Resume uploaded!');
       navigate(id ? `/resumes/${id}` : '/resumes');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Upload failed');
@@ -46,26 +47,23 @@ export default function ResumeUpload() {
 
   return (
     <div className="max-w-2xl mx-auto animate-fade-up">
-      <div className="mb-8">
-        <h1 className="font-display text-3xl font-semibold text-charcoal-800">Upload Resume</h1>
-        <p className="text-sm text-sage-400 mt-1">Upload your PDF resume for AI-powered analysis</p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="font-display text-3xl font-semibold text-charcoal-800">Upload Resume</h1>
+          <p className="text-sm text-sage-400 mt-1">Upload your existing PDF resume for ATS analysis</p>
+        </div>
+        <Link to="/resumes/builder" className="btn-secondary text-sm py-2.5">
+          <Sparkles size={16} /> Build from Scratch
+        </Link>
       </div>
 
-      {/* Drop Zone */}
       <div
         {...getRootProps()}
-        className={`
-          border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-200
-          ${isDragActive
-            ? 'border-sage-400 bg-sage-50 scale-[1.01]'
-            : file
-            ? 'border-sage-300 bg-sage-50'
-            : 'border-cream-300 bg-white hover:border-sage-300 hover:bg-cream-50'
-          }
-        `}
+        className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-200
+          ${isDragActive ? 'border-sage-400 bg-sage-50 scale-[1.01]' :
+            file ? 'border-sage-300 bg-sage-50' : 'border-cream-300 bg-white hover:border-sage-300 hover:bg-cream-50'}`}
       >
         <input {...getInputProps()} />
-
         {file ? (
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 rounded-2xl bg-sage-100 flex items-center justify-center mb-4">
@@ -73,11 +71,8 @@ export default function ResumeUpload() {
             </div>
             <p className="font-medium text-charcoal-800 mb-1">{file.name}</p>
             <p className="text-xs text-sage-400 mb-4">{(file.size / 1024).toFixed(1)} KB</p>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); setFile(null); }}
-              className="flex items-center gap-1.5 text-xs text-red-400 hover:text-red-500"
-            >
+            <button type="button" onClick={(e) => { e.stopPropagation(); setFile(null); }}
+              className="flex items-center gap-1.5 text-xs text-red-400 hover:text-red-500">
               <X size={14} /> Remove file
             </button>
           </div>
@@ -86,48 +81,34 @@ export default function ResumeUpload() {
             <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-colors ${isDragActive ? 'bg-sage-100' : 'bg-cream-200'}`}>
               <Upload size={28} className={isDragActive ? 'text-sage-500' : 'text-sage-400'} />
             </div>
-            <p className="font-medium text-charcoal-800 mb-1">
-              {isDragActive ? 'Drop it here!' : 'Drag & drop your resume'}
-            </p>
+            <p className="font-medium text-charcoal-800 mb-1">{isDragActive ? 'Drop it here!' : 'Drag & drop your resume'}</p>
             <p className="text-sm text-sage-400 mb-3">or click to browse</p>
-            <p className="text-xs text-sage-300">PDF only · Max 10MB</p>
+            <p className="text-xs text-sage-300">PDF only · Max 5MB</p>
           </div>
         )}
       </div>
 
-      {/* What happens next */}
       <div className="card p-5 mt-5">
         <h3 className="text-sm font-semibold text-charcoal-800 mb-3 flex items-center gap-2">
-          <Sparkles size={16} className="text-sage-500" /> What happens after upload
+          <Sparkles size={16} className="text-sage-500" /> After upload you can:
         </h3>
-        <div className="space-y-2.5">
+        <div className="space-y-2">
           {[
-            'Your PDF is securely stored in the cloud',
-            'AI extracts your skills, experience & education',
-            'You get an instant ATS score and detailed feedback',
-            'Personalized suggestions to improve your resume',
+            'Run ATS analysis to get your score',
+            'Compare against job descriptions',
+            'Generate a tailored cover letter',
+            'Download as a clean ATS-formatted PDF',
           ].map((step, i) => (
             <div key={i} className="flex items-center gap-3">
-              <div className="w-5 h-5 rounded-full bg-sage-100 flex items-center justify-center flex-shrink-0">
-                <span className="text-[10px] font-bold text-sage-600">{i + 1}</span>
-              </div>
+              <ChevronRight size={14} className="text-sage-400 flex-shrink-0" />
               <p className="text-xs text-sage-500">{step}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Upload Button */}
-      <button
-        onClick={handleUpload}
-        disabled={!file || uploading}
-        className="btn-primary w-full mt-5 py-4 text-base"
-      >
-        {uploading ? (
-          <><Spinner size={18} className="text-white" /> Uploading & analyzing...</>
-        ) : (
-          <><FileText size={18} /> Upload & Analyze Resume</>
-        )}
+      <button onClick={handleUpload} disabled={!file || uploading} className="btn-primary w-full mt-5 py-4 text-base">
+        {uploading ? <><Spinner size={18} className="text-white" /> Uploading…</> : <><FileText size={18} /> Upload Resume</>}
       </button>
     </div>
   );

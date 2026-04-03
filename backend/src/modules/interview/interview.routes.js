@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import {
   setupInterview, startInterview, submitAnswer,
-  completeInterview, getInterviewHistory, getInterview,
+  completeInterview, getInterviewHistory, getInterview, getInterviewReport,
 } from './interview.controller.js'
 import { protect } from '../../shared/middlewares/protect.middleware.js'
 import { usageGuard } from '../../shared/middlewares/usageGuard.middleware.js'
@@ -14,5 +14,6 @@ router.patch('/:id/start',    startInterview)
 router.patch('/:id/answer',   submitAnswer)
 router.patch('/:id/complete', completeInterview)
 router.get('/history',        getInterviewHistory)
+router.get('/:id/report',     getInterviewReport)
 router.get('/:id',            getInterview)
 export default router
