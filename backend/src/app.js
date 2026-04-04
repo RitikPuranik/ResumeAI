@@ -15,6 +15,7 @@ import jobmatchRoutes     from './modules/jobmatch/jobmatch.routes.js'
 import coverletterRoutes  from './modules/coverletter/coverletter.routes.js'
 import progressRoutes     from './modules/progress/progress.routes.js'
 import subscriptionRoutes from './modules/subscription/subscription.routes.js'
+import couponRoutes       from './modules/coupon/coupon.routes.js'
 
 const app = express()
 
@@ -75,6 +76,7 @@ app.use('/api/jobmatch',     jobmatchRoutes)
 app.use('/api/coverletter',  coverletterRoutes)
 app.use('/api/progress',     progressRoutes)
 app.use('/api/subscription', subscriptionRoutes)
+app.use('/api/coupons',      couponRoutes)
 
 // ── Error handler ─────────────────────────────────────────────────────────────
 app.use(errorMiddleware)
