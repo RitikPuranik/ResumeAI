@@ -2,6 +2,8 @@ import { asyncHandler } from '../../shared/utils/asyncHandler.js'
 import { ApiResponse } from '../../shared/utils/apiResponse.js'
 import { registerUser, loginUser, updateProfile, changePassword } from './auth.service.js'
 import User from '../user/user.model.js'
+import Subscription from '../subscription/subscription.model.js'
+
 
 export const register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body
@@ -21,7 +23,12 @@ export const logout = asyncHandler(async (req, res) => {
 
 export const getMe = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).select('-password')
-  res.status(200).json(new ApiResponse(200, { user }, 'User fetched'))
+  const sub = await Subscription.findOne({ user: req.user._id })
+  const userWithPlan = {
+    ...user.toObject(),
+    plan: sub?.plan || 'free',
+  }
+  res.status(200).json(new ApiResponse(200, { user: userWithPlan }, 'User fetched'))
 })
 
 export const updateProfileController = asyncHandler(async (req, res) => {

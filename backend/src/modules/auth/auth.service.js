@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import User from '../user/user.model.js'
 import { ApiError } from '../../shared/utils/apiError.js'
+import Subscription from '../subscription/subscription.model.js'
 
 const generateToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '7d' })
@@ -19,7 +20,11 @@ export const loginUser = async (email, password) => {
   if (!user) throw new ApiError(401, 'Invalid email or password')
   const match = await bcrypt.compare(password, user.password)
   if (!match) throw new ApiError(401, 'Invalid email or password')
-  return { user: { id: user._id, name: user.name, email: user.email }, token: generateToken(user._id) }
+  const sub = await Subscription.findOne({ user: user._id })
+  return {
+    user: { id: user._id, name: user.name, email: user.email, plan: sub?.plan || 'free' },
+    token: generateToken(user._id)
+  }
 }
 
 export const updateProfile = async (userId, data) => {
