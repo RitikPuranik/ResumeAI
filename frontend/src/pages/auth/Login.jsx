@@ -60,7 +60,7 @@ export default function Login() {
           <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
             <Sparkles size={18} className="text-white" />
           </div>
-          <span className="font-display text-xl font-semibold text-white">ResumeAI</span>
+          <span className="font-display text-xl font-semibold text-white">{import.meta.env.VITE_APP_NAME || 'ResumeAI'}</span>
         </div>
         <div>
           <blockquote className="font-display text-3xl font-semibold text-white leading-snug mb-4 italic">

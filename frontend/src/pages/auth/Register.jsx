@@ -48,7 +48,7 @@ export default function Register() {
           <div className="w-9 h-9 rounded-xl bg-sage-500 flex items-center justify-center">
             <Sparkles size={18} className="text-white" />
           </div>
-          <span className="font-display text-xl font-semibold text-white">ResumeAI</span>
+          <span className="font-display text-xl font-semibold text-white">{import.meta.env.VITE_APP_NAME || 'ResumeAI'}</span>
         </div>
         <div>
           <h2 className="font-display text-4xl font-semibold text-white leading-tight mb-6">
@@ -81,7 +81,7 @@ export default function Register() {
             <div className="w-8 h-8 rounded-xl bg-sage-500 flex items-center justify-center">
               <Sparkles size={16} className="text-white" />
             </div>
-            <span className="font-display text-xl font-semibold text-charcoal-800">ResumeAI</span>
+            <span className="font-display text-xl font-semibold text-charcoal-800">{import.meta.env.VITE_APP_NAME || 'ResumeAI'}</span>
           </div>
 
           <h2 className="font-display text-4xl font-semibold text-charcoal-800 mb-2">Create account</h2>

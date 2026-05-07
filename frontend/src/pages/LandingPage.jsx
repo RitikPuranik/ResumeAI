@@ -10,7 +10,7 @@ export default function LandingPage() {
           <div className="w-9 h-9 rounded-xl bg-sage-500 flex items-center justify-center shadow-sm">
             <Sparkles size={18} className="text-white" />
           </div>
-          <span className="font-display text-xl font-semibold text-charcoal-800">ResumeAI</span>
+          <span className="font-display text-xl font-semibold text-charcoal-800">{import.meta.env.VITE_APP_NAME || 'ResumeAI'}</span>
         </div>
         <div className="flex items-center gap-3">
           <Link to="/login" className="text-sm font-medium text-sage-600 hover:text-sage-700 px-4 py-2">Sign in</Link>
@@ -87,7 +87,7 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="max-w-2xl mx-auto px-6 py-24 text-center">
         <h2 className="font-display text-4xl font-semibold text-charcoal-800 mb-4">Ready to get started?</h2>
-        <p className="text-sage-400 mb-8">Join thousands of job seekers who use ResumeAI to land their dream roles.</p>
+        <p className="text-sage-400 mb-8">Join thousands of job seekers who use {import.meta.env.VITE_APP_NAME || 'ResumeAI'} to land their dream roles.</p>
         <Link to="/register" className="btn-primary text-base py-4 px-10">
           Create free account <ArrowRight size={18} />
         </Link>
@@ -99,9 +99,9 @@ export default function LandingPage() {
           <div className="w-6 h-6 rounded-lg bg-sage-500 flex items-center justify-center">
             <Sparkles size={12} className="text-white" />
           </div>
-          <span className="font-display font-semibold text-charcoal-800">ResumeAI</span>
+          <span className="font-display font-semibold text-charcoal-800">{import.meta.env.VITE_APP_NAME || 'ResumeAI'}</span>
         </div>
-        <p className="text-xs text-sage-400">© 2025 ResumeAI. All rights reserved.</p>
+        <p className="text-xs text-sage-400">© 2025 {import.meta.env.VITE_APP_NAME || 'ResumeAI'}. All rights reserved.</p>
       </footer>
     </div>
   );

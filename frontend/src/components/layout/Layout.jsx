@@ -38,7 +38,7 @@ export default function Layout() {
             <Sparkles size={18} className="text-white" />
           </div>
           <div>
-            <h1 className="font-display text-lg font-semibold text-charcoal-800 leading-none">ResumeAI</h1>
+            <h1 className="font-display text-lg font-semibold text-charcoal-800 leading-none">{import.meta.env.VITE_APP_NAME || 'ResumeAI'}</h1>
             <p className="text-xs text-sage-400 mt-0.5">Career Intelligence</p>
           </div>
         </div>
@@ -108,7 +108,7 @@ export default function Layout() {
             <div className="w-7 h-7 rounded-lg bg-sage-500 flex items-center justify-center">
               <Sparkles size={14} className="text-white" />
             </div>
-            <span className="font-display font-semibold text-charcoal-800">ResumeAI</span>
+            <span className="font-display font-semibold text-charcoal-800">{import.meta.env.VITE_APP_NAME || 'ResumeAI'}</span>
           </div>
           <div className="w-9" />
         </header>
