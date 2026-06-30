@@ -29,7 +29,8 @@ export default function Pricing() {
   const [couponCode,  setCouponCode]  = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null); // { code, discountPercent, description }
-  const user = useAuthStore((s) => s.user);
+  const user       = useAuthStore((s) => s.user);
+  const updateUser = useAuthStore((s) => s.updateUser);
 
   const { data: subData } = useQuery({
     queryKey: ['subscription'],
@@ -100,12 +101,17 @@ export default function Pricing() {
         theme:       { color: '#4a7d55' },
         handler: async (response) => {
           try {
-            await paymentAPI.verifyPayment({
+            const verifyRes = await paymentAPI.verifyPayment({
               razorpayOrderId:    response.razorpay_order_id,
               razorpayPaymentId:  response.razorpay_payment_id,
               razorpaySignature:  response.razorpay_signature,
               couponCode:         appliedCoupon?.code || undefined,
             });
+
+            // Fixed: persist the new plan into authStore + localStorage so the
+            //    Dashboard StatCard reads "pro" instead of stale "free" after reload
+            const activatedPlan = verifyRes?.data?.data?.plan || 'pro';
+            updateUser({ ...user, plan: activatedPlan });
             toast.success('🎉 Pro plan activated!');
             setTimeout(() => window.location.reload(), 1500);
           } catch {

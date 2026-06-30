@@ -22,5 +22,21 @@ connectDB().then(async () => {
 
   app.listen(PORT, () => {
     console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`)
+
+    // Keep-alive: ping self every 4 minutes to prevent Render free tier from sleeping
+    const backendUrl = process.env.BACKEND_URL;
+    if (backendUrl && process.env.NODE_ENV === 'production') {
+      const PING_INTERVAL = 4 * 60 * 1000; // 4 minutes
+      setInterval(async () => {
+        try {
+          const pingUrl = backendUrl.endsWith('/') ? `${backendUrl}health` : `${backendUrl}/health`;
+          const res = await fetch(pingUrl);
+          console.log(`🏓 Keep-alive ping: ${res.status}`);
+        } catch (err) {
+          console.warn('⚠️  Keep-alive ping failed:', err.message);
+        }
+      }, PING_INTERVAL);
+      console.log(`✅ Keep-alive started: pinging ${backendUrl} every 4 minutes`);
+    }
   })
 })

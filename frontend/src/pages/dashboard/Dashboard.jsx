@@ -4,6 +4,7 @@ import { FileText, Mic2, ArrowRight, Plus, TrendingUp, Clock } from 'lucide-reac
 import { useAuthStore } from '../../store/authStore';
 import { resumeAPI } from '../../api/resume';
 import { interviewAPI } from '../../api/interview';
+import { paymentAPI } from '../../api/payment';
 import { StatCard, PageLoader, Badge } from '../../components/ui';
 
 export default function Dashboard() {
@@ -29,6 +30,15 @@ export default function Dashboard() {
     },
   });
 
+  //Fixed: always fetch the live plan from the API — never rely solely on
+  //    the cached user object in localStorage, which becomes stale after an upgrade
+  const { data: subData } = useQuery({
+    queryKey: ['subscription'],
+    queryFn: () => paymentAPI.getSubscription().then((r) => r.data?.data || r.data),
+    retry: 1,
+  });
+
+  
   // Then use directly (no need for extra fallbacks)
   const resumeList = resumes || [];
   const sessionList = sessions || [];
@@ -54,10 +64,10 @@ export default function Dashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Resumes" value={resumeList.length} icon={FileText} color="sage" />
-        <StatCard label="Interviews" value={sessionList.length} icon={Mic2} color="warm" />
-        <StatCard label="Avg Score" value={avgScore || '—'} icon={TrendingUp} color="cream" />
-        <StatCard label="Plan" value={user?.plan || 'Free'} icon={Clock} color="sage" />
+        <StatCard label="Resumes"    value={resumeList.length}              icon={FileText}   color="sage"  />
+        <StatCard label="Interviews" value={sessionList.length}             icon={Mic2}       color="warm"  />
+        <StatCard label="Avg Score"  value={avgScore || '—'}                icon={TrendingUp} color="cream" />
+        <StatCard label="Plan"       value={subData?.plan || user?.plan || 'free'} icon={Clock} color="sage" />
       </div>
 
       {/* Quick Actions */}

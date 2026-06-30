@@ -74,7 +74,7 @@ export const createOrderService = async (userId, couponCode = null) => {
   if (!rzp) throw new ApiError(500, 'Payment system not configured. Add RAZORPAY credentials to .env')
 
   // Base price ₹999
-  const BASE_PRICE_PAISE = 99900
+  const BASE_PRICE_PAISE = 49900
   let finalAmount = BASE_PRICE_PAISE
   let appliedCoupon = null
   let discountPercent = 0

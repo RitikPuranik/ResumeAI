@@ -28,7 +28,7 @@ export const PLANS = {
 
   pro: {
     name:     'Pro',
-    price:    999,     // INR per month (₹999 ≈ $12)
+    price:    499,     // INR per month (₹999 ≈ $12)
     currency: 'INR',
     // BUG FIX: removed dead RAZORPAY_PLAN_ID reference — this backend uses
     // one-time order verification, not Razorpay subscription plans.
